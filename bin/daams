@@ -46,18 +46,13 @@ class Blkar_checker:
     def close(self):
         return json.loads(self.proc.stdout.read())
 
-def print_please_specify_subcommand(args):
-    print("Invoke with -h or --help for help message")
-
 def main():
     check_for_blkar_installation()
     parser = argparse.ArgumentParser()
-    parser.set_defaults(func=print_please_specify_subcommand)
 
-    parser.add_argument("--config", metavar="CONFIG", default=".daams.config", help="Config file to use")
+    parser.add_argument("--config", metavar="CONFIG", default=".daams.config", help="Configuration file to use")
 
     args = parser.parse_args()
-    args.func(args)
 
 if __name__ == "__main__":
     main()
