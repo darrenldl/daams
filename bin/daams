@@ -1,0 +1,51 @@
+#!/usr/bin/env python3
+import argparse
+import shutil
+from packaging import version
+
+blkar_config = {
+    "sbx_version" : 19,
+    "rs_data" : 10,
+    "rs_parity" : 2,
+    "burst" : 10,
+    "min_ver" : version.parse("7.0.0"),
+    "max_ver_exc" : version.parse("8.0.0")
+}
+
+def check_for_blkar_installation():
+    if shutil.which(blkar_name) == None:
+        print(blkar_name + " not detected, please make sure you have installed blkar correctly")
+        exit(1)
+
+    ver_str = re.match("blkar (.*)\n", subprocess.check_output(["blkar", "--version"]).decode("utf-8")).group(1)
+    ver = version.parse(ver_str)
+    if ver < blkar_min_ver or ver >= blkar_max_ver_exc:
+        print("Version " + ver_str + " not supported, version must be >=" + blkar_min_ver + " && < " + blkar_max_ver_exc)
+        exit(1)
+
+class Blkar_checker:
+    def __init__(self, file_path : str):
+        self.proc = Popen(["blkar", "check",
+                           "--hash",
+                           "--json",
+                           file_path],
+                          stdin=PIPE,
+                          stdout=PIPE)
+
+    def close(self):
+        return json.loads(self.proc.stdout.read())
+
+def print_please_specify_subcommand(args):
+    print("Invoke with -h or --help for help message")
+
+def main():
+    check_for_blkar_installation()
+    parser = argparse.ArgumentParser()
+    parser.set_defaults(func=print_please_specify_subcommand)
+    subparsers = parser.add_subparsers(help="subcommand help")
+
+    args = parser.parse_args()
+    args.func(args)
+
+if __name__ == "__main__":
+    main()
