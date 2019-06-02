@@ -2,6 +2,17 @@
 import argparse
 import shutil
 from packaging import version
+import re
+import subprocess
+from subprocess import Popen, PIPE
+import threading
+import json
+from datetime import datetime
+import os
+import random
+import string
+import sys
+import time
 
 blkar_config = {
     "sbx_version" : 19,
@@ -13,14 +24,14 @@ blkar_config = {
 }
 
 def check_for_blkar_installation():
-    if shutil.which(blkar_name) == None:
-        print(blkar_name + " not detected, please make sure you have installed blkar correctly")
+    if shutil.which("blkar") == None:
+        print("blkar" + " not detected, please make sure you have installed blkar correctly")
         exit(1)
 
     ver_str = re.match("blkar (.*)\n", subprocess.check_output(["blkar", "--version"]).decode("utf-8")).group(1)
     ver = version.parse(ver_str)
-    if ver < blkar_min_ver or ver >= blkar_max_ver_exc:
-        print("Version " + ver_str + " not supported, version must be >=" + blkar_min_ver + " && < " + blkar_max_ver_exc)
+    if ver < blkar_config["min_ver"] or ver >= blkar_config["max_ver_exc"]:
+        print("Version " + ver_str + " not supported, version must be >=" + blkar_config["min_ver"] + " && < " + blkar_config["max_ver_exc"])
         exit(1)
 
 class Blkar_checker:
@@ -42,7 +53,8 @@ def main():
     check_for_blkar_installation()
     parser = argparse.ArgumentParser()
     parser.set_defaults(func=print_please_specify_subcommand)
-    subparsers = parser.add_subparsers(help="subcommand help")
+
+    parser.add_argument("--config", metavar="CONFIG", default=".daams.config", help="Config file to use")
 
     args = parser.parse_args()
     args.func(args)
