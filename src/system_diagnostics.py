@@ -1,8 +1,11 @@
 from print_utils import printin
 import blkar
+import platform
 
 sys_info = {
-    "version" : "0.1.0"
+    "daams_version" : "0.1.0",
+    "acronym" : "D.A.A.M.S.",
+    "full_name" : "Data Archive Automatic Maintenance System"
 }
 
 def check_dependencies():
@@ -12,8 +15,13 @@ def check_dependencies():
     except Exception as e:
         printin(1, e.args[0])
         exit(1)
+    printin(1, "Okay")
 
 def print_setup_info():
-    print("System information reporting")
-    printin(1, "D.A.A.M.S. version : " + sys_info["version"])
-    printin(1, "blkar version : " + sys_info["blkar_version"])
+    print("System information")
+    printin(1, sys_info["acronym"] + " version : " + sys_info["daams_version"])
+    printin(1, "OS name            : " + platform.system())
+    printin(1, "OS release         : " + platform.release())
+    printin(1, "Machine type       : " + platform.machine())
+    printin(1, "Python version     : " + platform.python_version())
+    printin(1, "blkar version      : " + sys_info["blkar_version"])
