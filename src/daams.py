@@ -10,14 +10,18 @@ import time
 import yaml
 
 import blkar
+import system_diagnostics
 
 def main():
-    blkar.check_for_installation()
     parser = argparse.ArgumentParser()
 
     parser.add_argument("--config", metavar="CONFIG", default=".daams.config", help="Configuration file to use")
 
     args = parser.parse_args()
+
+    system_diagnostics.check_dependencies()
+
+    system_diagnostics.print_setup_info()
 
 if __name__ == "__main__":
     main()

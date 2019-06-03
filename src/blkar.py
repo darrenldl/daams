@@ -16,14 +16,14 @@ blkar_config = {
 
 def check_for_installation():
     if shutil.which("blkar") == None:
-        print("blkar" + " not detected, please make sure you have installed blkar correctly")
-        exit(1)
+        raise Exception("blkar" + " not detected, please make sure you have installed blkar correctly")
 
     ver_str = re.match("blkar (.*)\n", subprocess.check_output(["blkar", "--version"]).decode("utf-8")).group(1)
     ver = version.parse(ver_str)
     if ver < blkar_config["min_ver"] or ver >= blkar_config["max_ver_exc"]:
-        print("Version " + ver_str + " not supported, version must be >=" + blkar_config["min_ver"] + " && < " + blkar_config["max_ver_exc"])
-        exit(1)
+        raise Exception("Version " + ver_str + " not supported, version must be >=" + blkar_config["min_ver"] + " && < " + blkar_config["max_ver_exc"])
+
+    return ver_str
 
 class Blkar_checker:
     def __init__(self, file_path : str):
