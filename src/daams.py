@@ -7,6 +7,8 @@ import random
 import string
 import sys
 import time
+import yaml
+
 import blkar
 
 def main():
