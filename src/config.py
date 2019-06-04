@@ -103,7 +103,7 @@ def check_disk_health(config):
     try:
         printin(1, "Checking disk health section")
         if "disk_health" in config:
-            disk_health = config["cpu_health"]
+            disk_health = config["disk_health"]
             if not isinstance(disk_health, dict):
                 raise Exception("Value following key disk_health should be key value pairs")
 
