@@ -7,27 +7,39 @@ from print_utils import printin, indent_str
 from system_diagnostics import shutdown_error
 
 accepted_root_keys = ["ecsbx_stores",
-                      "cpu_health"]
+                      "cpu_health",
+                      "disk_health"]
+
+def check_keys(d, accepted):
+    for k in d.keys():
+        if k not in accepted:
+            return k
+    return None
 
 def check_root_keys(config):
     printin(1, "Checking root level keys")
-    root_keys = config.keys()
-    for k in root_keys:
-        if k not in accepted_root_keys:
-            printin(2, "Unrecognised key", '"' + k + '"')
-            shutdown_error()
+    unrecognised_key = check_keys(config, accepted_root_keys)
+    if unrecognised_key != None:
+        printin(2, "Unrecognised key", '"' + unrecognised_key + '"')
+        shutdown_error()
     printin(2, "Okay")
 
 def check_ecsbx_stores(config):
     try:
-        printin(1, "Checking ECSBX stores")
+        printin(1, "Checking ECSBX stores section")
         if "ecsbx_stores" in config:
             ecsbx_stores = config["ecsbx_stores"]
             if not isinstance(ecsbx_stores, list):
-                raise Exception("Value following key ecsbx should be a list")
+                raise Exception("Value following key ecsbx_stores should be a list")
             for store in ecsbx_stores:
                 if not isinstance(store, dict):
                     raise Exception("ECSBX store specification should be key value pairs")
+
+                unrecognised_key = check_keys(store, ["partition", "mount_dir"])
+                if unrecognised_key != None:
+                    printin(2, "Unrecognised key", '"' + unrecognised_key + '"')
+                    shutdown_error()
+
                 partition = store["partition"]
                 mount_dir = store["mount_dir"]
 
@@ -46,7 +58,39 @@ def check_ecsbx_stores(config):
                     raise Exception(mount_dir + " does not exist")
             printin(2, "Okay")
         else:
-            printin(2, "No ECSBX stores specified")
+            printin(2, "Section not specified")
+    except KeyError as e:
+        printin(2, "Key", str(e), "misisng")
+        shutdown_error()
+    except Exception as e:
+        printin(2, str(e))
+        shutdown_error()
+
+def check_cpu_health(config):
+    try:
+        printin(1, "Checking CPU health section")
+        if "cpu_health" in config:
+            cpu_health = config["cpu_health"]
+            if not isinstance(cpu_health, dict):
+                raise Exception("Value following key cpu_health should be key value pairs")
+
+            unrecognised_key = check_keys(cpu_health, ["warn_temp", "shutdown_temp"])
+            if unrecognised_key != None:
+                printin(2, "Unrecognised key", '"' + unrecognised_key + '"')
+                shutdown_error()
+
+            warn_temp = cpu_health["warn_temp"]
+            if not isinstance(warn_temp, int):
+                raise Exception("warn_temp should be an integer")
+            if warn_temp < 0:
+                raise Exception("warn_temp should be positive")
+            shutdown_temp = cpu_health["shutdown_temp"]
+            if not isinstance(shutdown_temp, int):
+                raise Exception("shutdown_temp should be an integer")
+            if shutdown_temp < 0:
+                raise Exception("shutdown_temp should be positive")
+        else:
+            printin(2, "Section not specified")
     except KeyError as e:
         printin(2, "Key", str(e), "misisng")
         shutdown_error()
@@ -59,6 +103,7 @@ def check_config(config):
     try:
         check_root_keys(config)
         check_ecsbx_stores(config)
+        check_cpu_health(config)
     except KeyError as e:
         printin(1, "Key", str(e), "misisng")
         shutdown_error()
