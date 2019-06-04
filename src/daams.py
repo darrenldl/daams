@@ -7,11 +7,12 @@ import random
 import string
 import sys
 import time
-import yaml
 
 import blkar
 import system_diagnostics
 from system_diagnostics import sys_info
+
+from config import Config
 
 def main():
     parser = argparse.ArgumentParser(prog=sys_info["acronym"])
@@ -27,6 +28,12 @@ def main():
     system_diagnostics.check_dependencies()
 
     system_diagnostics.print_system_info()
+
+    config = Config()
+
+    config.load_file(args.config)
+
+    config.print_debug()
 
 if __name__ == "__main__":
     main()
