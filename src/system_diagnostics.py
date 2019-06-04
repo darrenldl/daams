@@ -2,8 +2,6 @@ from print_utils import printin
 import blkar
 import platform
 
-from shutdown import shutdown
-
 sys_info = {
     "daams_version" : "0.1.0",
     "acronym" : "D.A.A.M.S.",
@@ -16,7 +14,7 @@ def check_dependencies():
         sys_info["blkar_version"] = blkar.check_for_installation()
     except Exception as e:
         printin(1, e.args[0])
-        shutdown()
+        shutdown_error()
     printin(1, "Okay")
 
 def print_system_info():
@@ -27,3 +25,11 @@ def print_system_info():
     printin(1, "Machine type       : " + platform.machine())
     printin(1, "Python version     : " + platform.python_version())
     printin(1, "blkar version      : " + sys_info["blkar_version"])
+
+def shutdown_error():
+    print("Shutting down", sys_info["acronym"])
+    exit(1)
+
+def shutdown_normal():
+    print("Shutting down", sys_info["acronym"])
+    exit(0)
