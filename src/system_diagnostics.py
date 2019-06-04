@@ -17,7 +17,7 @@ def check_dependencies():
         exit(1)
     printin(1, "Okay")
 
-def print_setup_info():
+def print_system_info():
     print("System information")
     printin(1, sys_info["acronym"] + " version : " + sys_info["daams_version"])
     printin(1, "OS name            : " + platform.system())

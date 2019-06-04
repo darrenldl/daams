@@ -26,7 +26,7 @@ def main():
 
     system_diagnostics.check_dependencies()
 
-    system_diagnostics.print_setup_info()
+    system_diagnostics.print_system_info()
 
 if __name__ == "__main__":
     main()
