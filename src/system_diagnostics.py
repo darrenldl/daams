@@ -5,7 +5,7 @@ import platform
 sys_info = {
     "daams_version" : "0.1.0",
     "acronym" : "D.A.A.M.S.",
-    "full_name" : "Data Archive Automatic Maintenance System"
+    "full_name" : "Data Archive Automatic Maintenance Subsystem"
 }
 
 def check_dependencies():
