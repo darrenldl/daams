@@ -6,9 +6,12 @@ from print_utils import printin, indent_str
 
 from system_diagnostics import shutdown_error
 
-accepted_root_keys = ["ecsbx_stores",
-                      "cpu_health",
-                      "disk_health"]
+accepted_root_keys = [
+    "ecsbx_stores",
+    "cpu_health",
+    "disk_health",
+    "delay_before_sched_sec",
+]
 
 def check_keys(d, accepted):
     for k in d.keys():
@@ -132,6 +135,22 @@ def check_disk_health(config):
         printin(2, str(e))
         shutdown_error()
 
+def check_delay_before_sched_sec(config):
+    try:
+        printin(1, "Checking delay_before_sched_sec")
+        if "delay_before_sched_sec" in config:
+            delay_before_sched_sec = config["delay_before_sched_sec"]
+            if not isinstance(delay_before_sched_sec, int):
+                raise Exception("delay_before_sched_sec should be an integer")
+            if delay_before_sched_sec < 0:
+                raise Exception("delay_before_sched_sec should be greater than or equal to 0")
+            printin(2, "Okay")
+        else:
+            printin(2, "Value not specified")
+    except Exception as e:
+        printin(2, str(e))
+        shutdown_error()
+
 def check_config(config):
     print("Checking configuration file")
     try:
@@ -139,6 +158,7 @@ def check_config(config):
         check_ecsbx_stores(config)
         check_cpu_health(config)
         check_disk_health(config)
+        check_delay_before_sched_sec(config)
     except KeyError as e:
         printin(1, "Key", str(e), "misisng")
         shutdown_error()
