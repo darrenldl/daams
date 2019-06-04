@@ -88,7 +88,41 @@ def check_cpu_health(config):
             if not isinstance(shutdown_temp, int):
                 raise Exception("shutdown_temp should be an integer")
             if shutdown_temp < 0:
-                raise Exception("shutdown_temp should be positive")
+                raise Exception("shutdown_temp should be greater than or equal to 0")
+            printin(2, "Okay")
+        else:
+            printin(2, "Section not specified")
+    except KeyError as e:
+        printin(2, "Key", str(e), "misisng")
+        shutdown_error()
+    except Exception as e:
+        printin(2, str(e))
+        shutdown_error()
+
+def check_disk_health(config):
+    try:
+        printin(1, "Checking disk health section")
+        if "disk_health" in config:
+            disk_health = config["cpu_health"]
+            if not isinstance(disk_health, dict):
+                raise Exception("Value following key disk_health should be key value pairs")
+
+            unrecognised_key = check_keys(disk_health, ["warn_temp", "shutdown_temp"])
+            if unrecognised_key != None:
+                printin(2, "Unrecognised key", '"' + unrecognised_key + '"')
+                shutdown_error()
+
+            warn_temp = disk_health["warn_temp"]
+            if not isinstance(warn_temp, int):
+                raise Exception("warn_temp should be an integer")
+            if warn_temp < 0:
+                raise Exception("warn_temp should be positive")
+            shutdown_temp = disk_health["shutdown_temp"]
+            if not isinstance(shutdown_temp, int):
+                raise Exception("shutdown_temp should be an integer")
+            if shutdown_temp < 0:
+                raise Exception("shutdown_temp should be greater than or equal to 0")
+            printin(2, "Okay")
         else:
             printin(2, "Section not specified")
     except KeyError as e:
@@ -104,6 +138,7 @@ def check_config(config):
         check_root_keys(config)
         check_ecsbx_stores(config)
         check_cpu_health(config)
+        check_disk_health(config)
     except KeyError as e:
         printin(1, "Key", str(e), "misisng")
         shutdown_error()
