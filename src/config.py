@@ -21,6 +21,7 @@ class Config:
             printin(1, "Failed to parse configuration file " + '"' + file_path + '"')
             printin(1, "Error :")
             print(indent_str(2, str(e)))
+            exit(1)
 
     def print_debug(self):
         print(self.config)
