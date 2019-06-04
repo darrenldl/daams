@@ -6,6 +6,18 @@ from print_utils import printin, indent_str
 
 from system_diagnostics import shutdown_error
 
+accepted_root_keys = ["ecsbx_stores",
+                      "cpu_health"]
+
+def check_root_keys(config):
+    printin(1, "Checking root level keys")
+    root_keys = config.keys()
+    for k in root_keys:
+        if k not in accepted_root_keys:
+            printin(2, "Unrecognised key", '"' + k + '"')
+            shutdown_error()
+    printin(2, "Okay")
+
 def check_ecsbx_stores(config):
     try:
         printin(1, "Checking ECSBX stores")
@@ -25,6 +37,13 @@ def check_ecsbx_stores(config):
                         raise Exception('"' + partition + '"' + " is not a block device")
                 except FileNotFoundError:
                     raise Exception("Partition " + partition + " not found")
+
+                if os.path.isfile(mount_dir):
+                    raise Exception(mount_dir + " is not a directory")
+                elif os.path.isdir(mount_dir):
+                    pass
+                else:
+                    raise Exception(mount_dir + " does not exist")
             printin(2, "Okay")
         else:
             printin(2, "No ECSBX stores specified")
@@ -38,6 +57,7 @@ def check_ecsbx_stores(config):
 def check_config(config):
     print("Checking configuration file")
     try:
+        check_root_keys(config)
         check_ecsbx_stores(config)
     except KeyError as e:
         printin(1, "Key", str(e), "misisng")
