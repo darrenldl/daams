@@ -26,15 +26,13 @@ def main():
     args = parser.parse_args()
 
     system_diagnostics.print_start_up_message()
-
+    system_diagnostics.check_system_rights()
     system_diagnostics.check_dependencies()
-
     system_diagnostics.print_system_info()
 
     config = Config()
 
     config.load_file(args.config)
-
     config.print_debug()
 
 if __name__ == "__main__":

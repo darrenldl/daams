@@ -1,6 +1,7 @@
 from print_utils import printin
 import blkar
 import platform
+import os
 
 sys_info = {
     "daams_version" : "0.1.0",
@@ -10,6 +11,13 @@ sys_info = {
 
 def print_start_up_message():
     print(sys_info["full_name"], "starting")
+
+def check_system_rights():
+    print("Checking system rights")
+    if os.geteuid() != 0:
+        printin(1, sys_info["acronym"], "requires root access")
+        shutdown_error()
+    printin(1, "Okay")
 
 def check_dependencies():
     print("Checking system dependencies")
