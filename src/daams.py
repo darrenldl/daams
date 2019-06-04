@@ -10,7 +10,7 @@ import time
 
 import blkar
 import system_diagnostics
-from system_diagnostics import sys_info
+from system_diagnostics import sys_info, shutdown_normal
 
 from config import Config
 
@@ -22,6 +22,7 @@ def main():
     parser.add_argument("--full-name", action="version", help="show full name", version=sys_info["full_name"])
     parser.add_argument("--version", action="version", help="show acrynym and version number", version=sys_info["acronym"] + " " + sys_info["daams_version"])
     parser.add_argument("--version-long", action="version", help="show full name and version number", version=sys_info["full_name"] + " " + sys_info["daams_version"])
+    parser.add_argument("--check-only", action="store_true", help="complete all initial checks then exit")
 
     args = parser.parse_args()
 
@@ -34,6 +35,10 @@ def main():
 
     config.load_file(args.config)
     config.print_debug()
+
+    if args.check_only:
+        print("All initial checks completed")
+        shutdown_normal()
 
 if __name__ == "__main__":
     main()
