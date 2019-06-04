@@ -25,6 +25,8 @@ def main():
 
     args = parser.parse_args()
 
+    system_diagnostics.print_start_up_message()
+
     system_diagnostics.check_dependencies()
 
     system_diagnostics.print_system_info()

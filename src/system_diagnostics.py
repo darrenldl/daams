@@ -8,6 +8,9 @@ sys_info = {
     "full_name" : "Data Archive Automatic Maintenance Subsystem"
 }
 
+def print_start_up_message():
+    print(sys_info["full_name"], "starting")
+
 def check_dependencies():
     print("Checking system dependencies")
     try:
