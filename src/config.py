@@ -166,9 +166,46 @@ def check_config(config):
         printin(1, str(e))
         shutdown_error()
 
+class ECSBXStore:
+    def __init__(self, partition, mount_dir):
+        self.partition = partition
+        self.mount_dir
+
+    def partition(self):
+        return self.partition
+
+    def mount_dir(self):
+        return self.mount_dir
+
+class CPUHealth:
+    def __init__(self, warn_temp, shutdown_temp):
+        self.warn_temp = warn_temp
+        self.shutdown_temp = shutdown_temp
+
+    def warn_temp(self):
+        return self.warn_temp
+
+    def shutdown_temp(self):
+        return self.shutdown_temp
+
+class DiskHealth:
+    def __init__(self, warn_temp, shutdown_temp):
+        self.warn_temp = warn_temp
+        self.shutdown_temp = shutdown_temp
+
+    def warn_temp(self):
+        return self.warn_temp
+
+    def shutdown_temp(self):
+        return self.shutdown_temp
+
 class Config:
     def __init__(self):
         self.config = None
+        self.ecsbx_stores = []
+        self.cpu_health = None
+        self.disk_health = None
+        self.delay_before_sched_sec = None
 
     def load_file(self, file_path):
         print("Loading configuration file")
@@ -176,7 +213,26 @@ class Config:
             with open(file_path) as f:
                 config = yaml.safe_load(f.read())
                 check_config(config)
+
                 self.config = config
+
+                if "ecsbx_stores" in config:
+                    self.ecsbx_stores = map(lambda d: ECSBXStore(partition=d["partition"],
+                                                                 mount_dir=d["mount_dir"]),
+                                            config["ecsbx_stores"])
+
+                if "cpu_health" in config:
+                    cpu_health = config["cpu_health"]
+                    self.cpu_health = CPUHealth(warn_temp=cpu_health["warn_temp"],
+                                                shutdown_temp=cpu_health["shutdown_temp"])
+
+                if "disk_health" in config:
+                    disk_health = config["disk_health"]
+                    self.disk_health = DiskHealth(warn_temp=disk_health["warn_temp"],
+                                                  shutdown_temp=disk_health["shutdown_temp"])
+
+                if "delay_before_sched_sec" in config:
+                    self.delay_before_sched_sec = config["delay_before_sched_sec"]
         except IsADirectoryError:
             printin(1, "Configuration file " + '"' + file_path + '"' + " is a directory")
             shutdown_error()
@@ -188,6 +244,18 @@ class Config:
             printin(1, "Error :")
             print(indent_str(2, str(e)))
             shutdown_error()
+
+    def ecsbx_stores(self):
+        return self.ecsbx_stores
+
+    def cpu_health(self):
+        return self.cpu_health
+
+    def disk_health(self):
+        return self.disk_health
+
+    def delay_before_sched_sec(self):
+        return self.delay_before_sched_sec
 
     def print_debug(self):
         print(self.config)
