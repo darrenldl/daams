@@ -34,11 +34,11 @@ def main():
     config = Config()
 
     config.load_file(args.config)
-    config.print_debug()
-
     if args.check_only:
         print("All initial checks completed")
         shutdown_normal()
+
+    config.print_debug()
 
 if __name__ == "__main__":
     main()
