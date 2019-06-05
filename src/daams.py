@@ -17,7 +17,7 @@ from config import Config
 def main():
     parser = argparse.ArgumentParser(prog=sys_info["acronym"])
 
-    parser.add_argument("--config", metavar="CONFIG", default=".daams.config", help="configuration file to use")
+    parser.add_argument("--config", metavar="CONFIG", default="daams.config", help="configuration file to use")
     parser.add_argument("--acronym", action="version", help="show acronym", version=sys_info["acronym"])
     parser.add_argument("--full-name", action="version", help="show full name", version=sys_info["full_name"])
     parser.add_argument("--version", action="version", help="show acrynym and version number", version=sys_info["acronym"] + " " + sys_info["daams_version"])
