@@ -19,4 +19,4 @@ class CPUMonitor:
             shutdown_error()
         else:
             printin(1, "Okay")
-            printin(2, "Tempature :", temp)
+            printin(2, "Temperature :", temp)
