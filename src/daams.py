@@ -11,6 +11,8 @@ import time
 import blkar
 import system_diagnostics
 from system_diagnostics import sys_info, shutdown_normal
+from cpu_diagnostics import CPUMonitor
+from disk_diagnostics import DiskMonitor
 
 from config import Config
 
@@ -34,6 +36,11 @@ def main():
     config = Config()
 
     config.load_file(args.config)
+
+    cpu_monitor = CPUMonitor()
+
+    cpu_monitor.check_hard_fail()
+
     if args.check_only:
         print("All initial checks completed")
         shutdown_normal()
