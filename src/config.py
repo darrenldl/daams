@@ -82,7 +82,7 @@ def check_ecsbx_stores(config):
 
             duplicate_mount_dirs = misc_utils.collect_duplicates(mount_dirs)
             if duplicate_mount_dirs != []:
-                raise Exception("Following mount directores are used more than once : " + ", ".join(duplicate_mount_dirs))
+                raise Exception("Following mount directories are used more than once : " + ", ".join(duplicate_mount_dirs))
 
             printin(2, "Okay")
         else:
