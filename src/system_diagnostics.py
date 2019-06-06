@@ -2,6 +2,7 @@ from print_utils import printin
 import blkar
 import platform
 import os
+import shutil
 
 sys_info = {
     "daams_version" : "0.1.0",
@@ -23,6 +24,8 @@ def check_dependencies():
     print("Checking system dependencies")
     try:
         sys_info["blkar_version"] = blkar.check_for_installation()
+        if shutil.which("hddtemp") == None:
+            raise Exception("hddtemp not detected")
     except Exception as e:
         printin(1, e.args[0])
         shutdown_error()
