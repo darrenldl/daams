@@ -11,11 +11,12 @@ class CPUMonitor:
         except FileNotFoundError:
             return None
 
-    def check_hard_fail(self):
+    def self_check_hard_fail(self):
         print("CPU monitor self check with hard fail")
         temp = self.get_temperature()
         if temp == None:
-            print("Failed to get temperature")
+            printin(1, "Failed to get temperature")
             shutdown_error()
         else:
-            printin(1, "Okay - Tempature :", temp)
+            printin(1, "Okay")
+            printin(2, "Tempature :", temp)

@@ -39,7 +39,12 @@ def main():
 
     cpu_monitor = CPUMonitor()
 
-    cpu_monitor.check_hard_fail()
+    cpu_monitor.self_check_hard_fail()
+
+    disk_monitors = map(lambda x: DiskMonitor(x.partition()), config.ecsbx_stores())
+
+    for dm in disk_monitors:
+        dm.self_check_hard_fail()
 
     if args.check_only:
         print("All initial checks completed")
