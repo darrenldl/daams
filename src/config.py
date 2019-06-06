@@ -166,7 +166,7 @@ def check_config(config):
         printin(1, str(e))
         shutdown_error()
 
-class ECSBXStore:
+class ECSBXStoreConfig:
     def __init__(self, partition, mount_dir):
         self.__partition = partition
         self.__mount_dir = mount_dir
@@ -184,7 +184,7 @@ class ECSBXStore:
     def mark_active(self):
         self.__active = True
 
-class CPUHealth:
+class CPUHealthConfig:
     def __init__(self, warn_temp, shutdown_temp):
         self.__warn_temp = warn_temp
         self.__shutdown_temp = shutdown_temp
@@ -195,7 +195,7 @@ class CPUHealth:
     def shutdown_temp(self):
         return self.__shutdown_temp
 
-class DiskHealth:
+class DiskHealthConfig:
     def __init__(self, warn_temp, shutdown_temp):
         self.__warn_temp = warn_temp
         self.__shutdown_temp = shutdown_temp
@@ -224,19 +224,19 @@ class Config:
                 self.__config = config
 
                 if "ecsbx_stores" in config:
-                    self.__ecsbx_stores = map(lambda d: ECSBXStore(partition=d["partition"],
-                                                                   mount_dir=d["mount_dir"]),
+                    self.__ecsbx_stores = map(lambda d: ECSBXStoreConfig(partition=d["partition"],
+                                                                         mount_dir=d["mount_dir"]),
                                               config["ecsbx_stores"])
 
                 if "cpu_health" in config:
                     cpu_health = config["cpu_health"]
-                    self.__cpu_health = CPUHealth(warn_temp=cpu_health["warn_temp"],
-                                                  shutdown_temp=cpu_health["shutdown_temp"])
+                    self.__cpu_health = CPUHealthConfig(warn_temp=cpu_health["warn_temp"],
+                                                        shutdown_temp=cpu_health["shutdown_temp"])
 
                 if "disk_health" in config:
                     disk_health = config["disk_health"]
-                    self.__disk_health = DiskHealth(warn_temp=disk_health["warn_temp"],
-                                                    shutdown_temp=disk_health["shutdown_temp"])
+                    self.__disk_health = DiskHealthConfig(warn_temp=disk_health["warn_temp"],
+                                                          shutdown_temp=disk_health["shutdown_temp"])
 
                 if "delay_before_sched_sec" in config:
                     self.__delay_before_sched_sec = config["delay_before_sched_sec"]
