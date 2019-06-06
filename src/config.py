@@ -6,6 +6,8 @@ from print_utils import printin, indent_str
 
 from system_diagnostics import shutdown_error
 
+import misc_utils
+
 accepted_root_keys = [
     "ecsbx_stores",
     "cpu_health",
@@ -34,17 +36,27 @@ def check_ecsbx_stores(config):
             ecsbx_stores = config["ecsbx_stores"]
             if not isinstance(ecsbx_stores, list):
                 raise Exception("Value following key ecsbx_stores should be a list")
+
+            names = []
+            partitions = []
+            mount_dirs = []
+
             for store in ecsbx_stores:
                 if not isinstance(store, dict):
                     raise Exception("ECSBX store specification should be key value pairs")
 
-                unrecognised_key = check_keys(store, ["partition", "mount_dir"])
+                unrecognised_key = check_keys(store, ["name", "partition", "mount_dir"])
                 if unrecognised_key != None:
                     printin(2, "Unrecognised key", '"' + unrecognised_key + '"')
                     shutdown_error()
 
+                name = store["name"]
                 partition = store["partition"]
                 mount_dir = store["mount_dir"]
+
+                names.append(name)
+                partitions.append(partition)
+                mount_dirs.append(mount_dir)
 
                 try:
                     mode = os.stat(partition).st_mode
@@ -59,6 +71,19 @@ def check_ecsbx_stores(config):
                     pass
                 else:
                     raise Exception(mount_dir + " does not exist")
+
+            duplicate_names = misc_utils.collect_duplicates(names)
+            if duplicate_names != []:
+                raise Exception("Following names are used more than once : " + ", ".join(duplicate_names))
+
+            duplicate_partitions = misc_utils.collect_duplicates(partitions)
+            if duplicate_partitions != []:
+                raise Exception("Following partitions are used more than once : " + ", ".join(duplicate_partitions))
+
+            duplicate_mount_dirs = misc_utils.collect_duplicates(mount_dirs)
+            if duplicate_mount_dirs != []:
+                raise Exception("Following mount directores are used more than once : " + ", ".join(duplicate_mount_dirs))
+
             printin(2, "Okay")
         else:
             printin(2, "Section not specified")
