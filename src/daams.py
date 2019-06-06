@@ -50,7 +50,5 @@ def main():
         print("All initial checks completed")
         shutdown_normal()
 
-    config.print_debug()
-
 if __name__ == "__main__":
     main()
