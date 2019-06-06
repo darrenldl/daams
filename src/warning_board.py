@@ -1,17 +1,17 @@
 from datetime import datetime
-from print_utils import printin
+from print_utils import eprint, eprintin
 
 class WarningBoard:
     def __init__(self):
         self.__messages = []
 
-    def push(self, msg):
-        self.__messages.append((datetime.now(), msg))
+    def push(self, msg, persist=True):
+        self.__messages.append((datetime.now(), msg, persist))
 
     def clear(self):
-        self.__messages = []
+        self.__messages = filter(lambda (_, _, persist): persist, self.__messages)
 
     def display(self):
-        print("Warnings :")
+        eprint("Warnings :")
         for (time, msg) in self.__messages:
-            printin(1, time.strftime("%Y-%m-%d_%H:%M:%S"), "-", msg)
+            eprintin(1, time.strftime("%Y-%m-%d_%H:%M:%S"), "-", msg)
