@@ -15,3 +15,4 @@ class WarningBoard:
         eprint("Warnings :")
         for (time, msg) in self.__messages:
             eprintin(1, time.strftime("%Y-%m-%d_%H:%M:%S"), "-", msg)
+        self.clear()
