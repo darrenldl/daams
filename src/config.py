@@ -77,21 +77,21 @@ def check_cpu_health(config):
             if not isinstance(cpu_health, dict):
                 raise Exception("Value following key cpu_health should be key value pairs")
 
-            unrecognised_key = check_keys(cpu_health, ["warn_temp", "shutdown_temp"])
+            unrecognised_key = check_keys(cpu_health, ["warn_temperature", "shutdown_temperature"])
             if unrecognised_key != None:
                 printin(2, "Unrecognised key", '"' + unrecognised_key + '"')
                 shutdown_error()
 
-            warn_temp = cpu_health["warn_temp"]
-            if not isinstance(warn_temp, int):
-                raise Exception("warn_temp should be an integer")
-            if warn_temp < 0:
-                raise Exception("warn_temp should be positive")
-            shutdown_temp = cpu_health["shutdown_temp"]
-            if not isinstance(shutdown_temp, int):
-                raise Exception("shutdown_temp should be an integer")
-            if shutdown_temp < 0:
-                raise Exception("shutdown_temp should be greater than or equal to 0")
+            warn_temperature = cpu_health["warn_temperature"]
+            if not isinstance(warn_temperature, int):
+                raise Exception("warn_temperature should be an integer")
+            if warn_temperature < 0:
+                raise Exception("warn_temperature should be positive")
+            shutdown_temperature = cpu_health["shutdown_temperature"]
+            if not isinstance(shutdown_temperature, int):
+                raise Exception("shutdown_temperature should be an integer")
+            if shutdown_temperature < 0:
+                raise Exception("shutdown_temperature should be greater than or equal to 0")
             printin(2, "Okay")
         else:
             printin(2, "Section not specified")
@@ -110,21 +110,21 @@ def check_disk_health(config):
             if not isinstance(disk_health, dict):
                 raise Exception("Value following key disk_health should be key value pairs")
 
-            unrecognised_key = check_keys(disk_health, ["warn_temp", "shutdown_temp"])
+            unrecognised_key = check_keys(disk_health, ["warn_temperature", "shutdown_temperature"])
             if unrecognised_key != None:
                 printin(2, "Unrecognised key", '"' + unrecognised_key + '"')
                 shutdown_error()
 
-            warn_temp = disk_health["warn_temp"]
-            if not isinstance(warn_temp, int):
-                raise Exception("warn_temp should be an integer")
-            if warn_temp < 0:
-                raise Exception("warn_temp should be positive")
-            shutdown_temp = disk_health["shutdown_temp"]
-            if not isinstance(shutdown_temp, int):
-                raise Exception("shutdown_temp should be an integer")
-            if shutdown_temp < 0:
-                raise Exception("shutdown_temp should be greater than or equal to 0")
+            warn_temperature = disk_health["warn_temperature"]
+            if not isinstance(warn_temperature, int):
+                raise Exception("warn_temperature should be an integer")
+            if warn_temperature < 0:
+                raise Exception("warn_temperature should be positive")
+            shutdown_temperature = disk_health["shutdown_temperature"]
+            if not isinstance(shutdown_temperature, int):
+                raise Exception("shutdown_temperature should be an integer")
+            if shutdown_temperature < 0:
+                raise Exception("shutdown_temperature should be greater than or equal to 0")
             printin(2, "Okay")
         else:
             printin(2, "Section not specified")
@@ -185,26 +185,26 @@ class ECSBXStoreConfig:
         self.__active = True
 
 class CPUHealthConfig:
-    def __init__(self, warn_temp, shutdown_temp):
-        self.__warn_temp = warn_temp
-        self.__shutdown_temp = shutdown_temp
+    def __init__(self, warn_temperature, shutdown_temperature):
+        self.__warn_temperature = warn_temperature
+        self.__shutdown_temperature = shutdown_temperature
 
-    def warn_temp(self):
-        return self.__warn_temp
+    def warn_temperature(self):
+        return self.__warn_temperature
 
-    def shutdown_temp(self):
-        return self.__shutdown_temp
+    def shutdown_temperature(self):
+        return self.__shutdown_temperature
 
 class DiskHealthConfig:
-    def __init__(self, warn_temp, shutdown_temp):
-        self.__warn_temp = warn_temp
-        self.__shutdown_temp = shutdown_temp
+    def __init__(self, warn_temperature, shutdown_temperature):
+        self.__warn_temperature = warn_temperature
+        self.__shutdown_temperature = shutdown_temperature
 
-    def warn_temp(self):
-        return self.__warn_temp
+    def warn_temperature(self):
+        return self.__warn_temperature
 
-    def shutdown_temp(self):
-        return self.__shutdown_temp
+    def shutdown_temperature(self):
+        return self.__shutdown_temperature
 
 class Config:
     def __init__(self):
@@ -230,13 +230,13 @@ class Config:
 
                 if "cpu_health" in config:
                     cpu_health = config["cpu_health"]
-                    self.__cpu_health = CPUHealthConfig(warn_temp=cpu_health["warn_temp"],
-                                                        shutdown_temp=cpu_health["shutdown_temp"])
+                    self.__cpu_health = CPUHealthConfig(warn_temperature=cpu_health["warn_temperature"],
+                                                        shutdown_temperature=cpu_health["shutdown_temperature"])
 
                 if "disk_health" in config:
                     disk_health = config["disk_health"]
-                    self.__disk_health = DiskHealthConfig(warn_temp=disk_health["warn_temp"],
-                                                          shutdown_temp=disk_health["shutdown_temp"])
+                    self.__disk_health = DiskHealthConfig(warn_temperature=disk_health["warn_temperature"],
+                                                          shutdown_temperature=disk_health["shutdown_temperature"])
 
                 if "delay_before_sched_sec" in config:
                     self.__delay_before_sched_sec = config["delay_before_sched_sec"]
