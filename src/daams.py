@@ -42,7 +42,7 @@ def main():
 
     cpu_monitor.self_check_hard_fail()
 
-    ecsbx_stores = map(lambda x: ECSBXStore(x), config.ecsbx_stores())
+    ecsbx_stores = [ECSBXStore(x) for x in config.ecsbx_stores()]
 
     for ecsbx_store in ecsbx_stores:
         ecsbx_store.self_check_hard_fail()
@@ -50,6 +50,9 @@ def main():
     if args.check_only:
         print("All initial checks completed")
         shutdown_normal()
+
+    for ecsbx_store in ecsbx_stores:
+        ecsbx_store.unmount()
 
 if __name__ == "__main__":
     main()

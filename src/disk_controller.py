@@ -57,9 +57,9 @@ class DiskController:
             printin(1, "Failed to mount")
 
     def unmount(self):
-        print("Unmounting partition", self__part, "to", self.__mount_dir)
+        print("Unmounting directory", self.__mount_dir)
         completed = subprocess.run(["umount", self.__mount_dir], capture_output=True)
         if completed.returncode == 0:
             printin(1, "Okay")
         else:
-            printin(1, "Failed to mount")
+            printin(1, "Failed to unmount")
