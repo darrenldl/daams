@@ -12,7 +12,8 @@ import blkar
 import system_diagnostics
 from system_diagnostics import sys_info, shutdown_normal
 from cpu_diagnostics import CPUMonitor
-from disk_diagnostics import DiskMonitor
+
+from ecsbx_store import ECSBXStore
 
 from config import Config
 
@@ -41,10 +42,10 @@ def main():
 
     cpu_monitor.self_check_hard_fail()
 
-    disk_controllers = map(lambda x: DiskController(x), config.ecsbx_stores())
+    ecsbx_stores = map(lambda x: ECSBXStore(x), config.ecsbx_stores())
 
-    for dm in disk_monitors:
-        dm.self_check_hard_fail()
+    for ecsbx_store in ecsbx_stores:
+        ecsbx_store.self_check_hard_fail()
 
     if args.check_only:
         print("All initial checks completed")
