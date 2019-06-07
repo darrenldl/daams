@@ -32,7 +32,7 @@ class DiskController:
             return int(get_raw_value(line))
 
     def self_check_hard_fail(self):
-        print("Disk monitor self check with hard fail")
+        print("Disk controller self check with hard fail, disk :", self.__disk)
 
         temp = self.get_temperature()
         reallocated_sector_count = self.get_reallocated_sector_count()
