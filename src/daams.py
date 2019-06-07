@@ -52,6 +52,9 @@ def main():
         shutdown_normal()
 
     for ecsbx_store in ecsbx_stores:
+        ecsbx_store.mount()
+
+    for ecsbx_store in ecsbx_stores:
         ecsbx_store.unmount()
 
 if __name__ == "__main__":
