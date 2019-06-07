@@ -17,7 +17,7 @@ class DiskController:
 
     def get_temperature(self):
         lines = [x for x in self.get_smartctl_lines() if b"Temperature_Celsius" in x]
-        if lines is []:
+        if lines == []:
             return None
         else:
             line = lines[0]
@@ -25,7 +25,7 @@ class DiskController:
 
     def get_reallocated_sector_count(self):
         lines = [x for x in self.get_smartctl_lines() if b"Reallocated_Sector_Ct" in x]
-        if lines is []:
+        if lines == []:
             return None
         else:
             line = lines[0]
@@ -48,18 +48,29 @@ class DiskController:
             printin(2, "Temperature :", temp)
             printin(2, "Reallocated sector count :", reallocated_sector_count)
 
+    def mount_output_lines(self):
+        return subprocess.run(["mount"], capture_output=True).stdout.splitlines()
+
     def mount(self):
         print("Mounting partition", self.__part, "to", self.__mount_dir)
-        completed = subprocess.run(["mount", self.__part, self.__mount_dir], capture_output=True)
-        if completed.returncode == 0:
-            printin(1, "Okay")
+        lines = [x for x in self.mount_output_lines() if self.__part in str(x)]
+        if lines == []:
+            completed = subprocess.run(["mount", self.__part, self.__mount_dir], capture_output=True)
+            if completed.returncode == 0:
+                printin(1, "Okay")
+            else:
+                printin(1, "Failed to mount")
         else:
-            printin(1, "Failed to mount")
+            printin(1, "Skipped, disk already mounted")
 
     def unmount(self):
         print("Unmounting directory", self.__mount_dir)
-        completed = subprocess.run(["umount", self.__mount_dir], capture_output=True)
-        if completed.returncode == 0:
-            printin(1, "Okay")
+        lines = [x for x in self.mount_output_lines() if self.__part in str(x)]
+        if lines == []:
+            printin(1, "Skipped, disk is not mounted")
         else:
-            printin(1, "Failed to unmount")
+            completed = subprocess.run(["umount", self.__mount_dir], capture_output=True)
+            if completed.returncode == 0:
+                printin(1, "Okay")
+            else:
+                printin(1, "Failed to unmount")

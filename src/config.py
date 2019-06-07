@@ -192,10 +192,14 @@ def check_config(config):
         shutdown_error()
 
 class ECSBXStoreConfig:
-    def __init__(self, partition, mount_dir):
+    def __init__(self, name, partition, mount_dir):
+        self.__name = name
         self.__partition = partition
         self.__mount_dir = mount_dir
         self.__active = True
+
+    def name(self):
+        return self.__name
 
     def partition(self):
         return self.__partition
@@ -249,7 +253,8 @@ class Config:
                 self.__config = config
 
                 if "ecsbx_stores" in config:
-                    self.__ecsbx_stores = map(lambda d: ECSBXStoreConfig(partition=d["partition"],
+                    self.__ecsbx_stores = map(lambda d: ECSBXStoreConfig(name=d["name"],
+                                                                         partition=d["partition"],
                                                                          mount_dir=d["mount_dir"]),
                                               config["ecsbx_stores"])
 
