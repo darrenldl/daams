@@ -6,7 +6,7 @@ from system_diagnostics import shutdown_error
 def get_raw_value(line):
     return line.split()[9]
 
-class DiskMonitor:
+class DiskController:
     def __init__(self, path):
         self.__path = path.rstrip(string.digits)
 

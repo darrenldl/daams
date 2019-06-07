@@ -41,7 +41,7 @@ def main():
 
     cpu_monitor.self_check_hard_fail()
 
-    disk_monitors = map(lambda x: DiskMonitor(x.partition()), config.ecsbx_stores())
+    disk_controllers = map(lambda x: DiskController(x), config.ecsbx_stores())
 
     for dm in disk_monitors:
         dm.self_check_hard_fail()
