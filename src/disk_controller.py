@@ -7,11 +7,13 @@ def get_raw_value(line):
     return line.split()[9]
 
 class DiskController:
-    def __init__(self, path):
-        self.__path = path.rstrip(string.digits)
+    def __init__(self, part, mount_dir):
+        self.__part = part
+        self.__disk = part.rstrip(string.digits)
+        self.__mount_dir = mount_dir
 
     def get_smartctl_lines(self):
-        return subprocess.run(["smartctl", "-a", self.__path], capture_output=True).stdout.splitlines()
+        return subprocess.run(["smartctl", "-a", self.__disk], capture_output=True).stdout.splitlines()
 
     def get_temperature(self):
         lines = [x for x in self.get_smartctl_lines() if b"Temperature_Celsius" in x]
@@ -45,3 +47,19 @@ class DiskController:
             printin(1, "Okay")
             printin(2, "Temperature :", temp)
             printin(2, "Reallocated sector count :", reallocated_sector_count)
+
+    def mount(self):
+        print("Mounting partition", self.__part, "to", self.__mount_dir)
+        completed = subprocess.run(["mount", self.__part, self.__mount_dir], capture_output=True)
+        if completed.returncode == 0:
+            printin(1, "Okay")
+        else:
+            printin(1, "Failed to mount")
+
+    def unmount(self):
+        print("Unmounting partition", self__part, "to", self.__mount_dir)
+        completed = subprocess.run(["umount", self.__mount_dir], capture_output=True)
+        if completed.returncode == 0:
+            printin(1, "Okay")
+        else:
+            printin(1, "Failed to mount")
