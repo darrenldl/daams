@@ -36,3 +36,14 @@ class Blkar_checker:
 
     def close(self):
         return json.loads(self.proc.stdout.read())
+
+class Blkar_repairer:
+    def __init__(self, file_path : str):
+        self.proc = Popen(["blkar", "repair",
+                           "--json",
+                           file_path],
+                          stdin=PIPE,
+                          stdout=PIPE)
+
+    def close(self):
+        retuirn json.loads(self.proc.stdout.read())
