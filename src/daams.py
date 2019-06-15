@@ -55,10 +55,11 @@ def main():
         ecsbx_store.mount()
 
     for ecsbx_store in ecsbx_stores:
-        ecsbx_store.check()
+        ecsbx_store.check_archives()
+        ecsbx_store.repair_archives()
 
-    for ecsbx_store in ecsbx_stores:
-        ecsbx_store.unmount()
+    # for ecsbx_store in ecsbx_stores:
+    #     ecsbx_store.unmount()
 
 if __name__ == "__main__":
     main()

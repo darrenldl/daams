@@ -2,6 +2,7 @@ import string
 import subprocess
 from print_utils import printin
 from system_diagnostics import shutdown_error
+from pathlib import Path
 
 def get_raw_value(line):
     return line.split()[9]
@@ -78,3 +79,10 @@ class DiskController:
                 printin(1, "Okay")
             else:
                 printin(1, "Failed to unmount")
+
+    def check_if_accessible(self):
+        try:
+            Path(self.mount_dir + "daams.touch")
+            return True
+        except Exception:
+            return False

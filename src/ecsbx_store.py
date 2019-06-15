@@ -9,7 +9,7 @@ class ECSBXStore(DiskController):
         self.name = config.name()
         self.to_be_repaired = []
 
-    def check(self):
+    def check_archives(self):
         print("ECBSX store check intitiated, store : " + self.name)
         partial = []
         full_okay = []
@@ -63,11 +63,13 @@ class ECSBXStore(DiskController):
                     unrelated.append(full_path)
         self.to_be_repaired = full_failed.copy()
 
-    def repair(self):
+    def repair_archives(self):
         print("ECBSX store repair intitiated, store : " + self.name)
         if self.to_be_repaired == []:
-            printin(1, "No files to be repaired")
+            printin(1, "No archives to be repaired")
         else:
             for f in self.to_be_repaired:
                 printin(1, "Repairing " + f)
                 res = blkar.repair_file(f)
+                print(res)
+            self.to_be_repaired = []
