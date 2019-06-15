@@ -1,5 +1,6 @@
 import os
 import blkar
+from print_utils import printin
 from disk_controller import DiskController
 
 class ECSBXStore(DiskController):
@@ -17,14 +18,39 @@ class ECSBXStore(DiskController):
             for f in files:
                 full_path = os.path.join(d, f)
                 if full_path.endswith(".ecsbx.part"):
-                    print("Ignoring partial copy \"" + full_path + "\"")
+                    print("Ignoring partial copy " + full_path)
                     partial.append(full_path)
                 elif full_path.endswith(".ecsbx"):
-                    print("Checking \"" + f + "\"")
+                    print("Checking " + f)
                     res = blkar.check_file(full_path)
-                    print(res)
+                    error = res["error"]
+                    if error != None:
+                        printin(1, error)
+                        printin(1, "Ignoring file")
+                        continue
+
+                    repair=False
+
+                    failed_block_count = res["stats"]["numberOfBlocksFailedCheck"]
+                    if failed_block_count > 0:
+                        printin(1, failed_block_count, "blocks failed check")
+                        full_failed.append(full_path)
+                        repair=True
+
+                    if "recordedHash" in res["stats"]:
+                        recorded_hash = res["stats"]["recordedHash"]
+                        data_hash = res["stats"]["hashOfStoredData"]
+                        if recorded_hash != data_hash:
+                            printin(1, "Hash check failed")
+                            repair=True
+                    else:
+                        printin(1, "No hash recorded")
+
+                    if repair:
+                        full_failed.append(full_path)
+                        printin(1, "Added to repair list")
                 else:
-                    print("Ignoring unrelated file \"" + full_path + "\"")
+                    print("Ignoring unrelated file " + full_path)
                     unrelated.append(full_path)
         self.to_be_repaired = full_failed.copy()
 
