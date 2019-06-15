@@ -4,24 +4,31 @@ from disk_controller import DiskController
 
 class ECSBXStore(DiskController):
     def __init__(self, config):
-        DiskController.__init__(self, config.partition(), config.mount_dir())
-        self.__name = config.name()
-        self.__to_be_repaired = []
+        super().__init__(config.partition(), config.mount_dir())
+        self.name = config.name()
+        self.to_be_repaired = []
 
     def check(self):
         partial = []
         full_okay = []
         full_failed = []
         unrelated = []
-        for f in os.walk(self.mount_dir):
-            if f.endswith(".ecsbx.part"):
-                partial.append(f)
-            elif f.endswith(".ecsbx"):
-                res = blkar.Checker(f)
-                print(res)
-            else:
-                unrelated.append(f)
-        self.__to_be_repaired = full_failed.copy()
+        for d, _, files in os.walk(self.mount_dir):
+            for f in files:
+                full_path = os.path.join(d, f)
+                if full_path.endswith(".ecsbx.part"):
+                    print("Ignoring partial copy \"" + full_path + "\"")
+                    partial.append(full_path)
+                elif full_path.endswith(".ecsbx"):
+                    print("Checking \"" + f + "\"")
+                    res = blkar.check_file(full_path)
+                    print(res)
+                else:
+                    print("Ignoring unrelated file \"" + full_path + "\"")
+                    unrelated.append(full_path)
+        self.to_be_repaired = full_failed.copy()
 
     def repair(self):
-
+        for f in self.to_be_repaired:
+            res = blkar.Repaier(f)
+            print(res)

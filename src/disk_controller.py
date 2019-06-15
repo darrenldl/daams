@@ -8,12 +8,12 @@ def get_raw_value(line):
 
 class DiskController:
     def __init__(self, part, mount_dir):
-        self.__part = part
-        self.__disk = part.rstrip(string.digits)
-        self.__mount_dir = mount_dir
+        self.part = part
+        self.disk = part.rstrip(string.digits)
+        self.mount_dir = mount_dir
 
     def get_smartctl_lines(self):
-        return subprocess.run(["smartctl", "-a", self.__disk], capture_output=True).stdout.splitlines()
+        return subprocess.run(["smartctl", "-a", self.disk], capture_output=True).stdout.splitlines()
 
     def get_temperature(self):
         lines = [x for x in self.get_smartctl_lines() if b"Temperature_Celsius" in x]
@@ -52,10 +52,10 @@ class DiskController:
         return subprocess.run(["mount"], capture_output=True).stdout.splitlines()
 
     def mount(self):
-        print("Mounting partition", self.__part, "to", self.__mount_dir)
-        lines = [x for x in self.mount_output_lines() if self.__part in str(x)]
+        print("Mounting partition", self.part, "to", self.mount_dir)
+        lines = [x for x in self.mount_output_lines() if self.part in str(x)]
         if lines == []:
-            completed = subprocess.run(["mount", self.__part, self.__mount_dir], capture_output=True)
+            completed = subprocess.run(["mount", self.part, self.mount_dir], capture_output=True)
             if completed.returncode == 0:
                 printin(1, "Okay")
             else:
@@ -64,12 +64,12 @@ class DiskController:
             printin(1, "Skipped, disk already mounted")
 
     def unmount(self):
-        print("Unmounting directory", self.__mount_dir)
-        lines = [x for x in self.mount_output_lines() if self.__part in str(x)]
+        print("Unmounting directory", self.mount_dir)
+        lines = [x for x in self.mount_output_lines() if self.part in str(x)]
         if lines == []:
             printin(1, "Skipped, disk is not mounted")
         else:
-            completed = subprocess.run(["umount", self.__mount_dir], capture_output=True)
+            completed = subprocess.run(["umount", self.mount_dir], capture_output=True)
             if completed.returncode == 0:
                 printin(1, "Okay")
             else:

@@ -25,25 +25,19 @@ def check_for_installation():
 
     return ver_str
 
-class Checker:
-    def __init__(self, file_path : str):
-        self.proc = Popen(["blkar", "check",
-                           "--hash",
-                           "--json",
-                           file_path],
-                          stdin=PIPE,
-                          stdout=PIPE)
+def check_file(path):
+    completed = subprocess.run(["blkar", "check",
+                                "--hash",
+                                "--json",
+                                path],
+                               capture_output=True)
 
-    def close(self):
-        return json.loads(self.proc.stdout.read())
+    return json.loads(completed.stdout)
 
-class Repairer:
-    def __init__(self, file_path : str):
-        self.proc = Popen(["blkar", "repair",
-                           "--json",
-                           file_path],
-                          stdin=PIPE,
-                          stdout=PIPE)
+def repair_file(path):
+    completed = subprocess.run(["blkar", "repair",
+                                "--json",
+                                path],
+                               capture_output=True)
 
-    def close(self):
-        retuirn json.loads(self.proc.stdout.read())
+    return json.loads(completed.stdout)
