@@ -3,6 +3,7 @@ import subprocess
 from print_utils import printin
 from system_diagnostics import shutdown_error
 from pathlib import Path
+import os
 
 def get_raw_value(line):
     return line.split()[9]
@@ -82,7 +83,7 @@ class DiskController:
 
     def check_if_accessible(self):
         try:
-            Path(self.mount_dir + "daams.touch")
+            Path(os.path.join(self.mount_dir, "daams.touch")).touch()
             return True
         except Exception:
             return False

@@ -9,10 +9,13 @@ class WarningBoard:
         self.__messages.append((datetime.now(), msg, persist))
 
     def clear(self):
-        self.__messages = filter(lambda (_, _, persist): persist, self.__messages)
+        self.__messages = [(time, msg, persist) for (time, msg, persist) in self.__messages if persist]
 
     def display(self):
-        eprint("Warnings :")
-        for (time, msg) in self.__messages:
-            eprintin(1, time.strftime("%Y-%m-%d_%H:%M:%S"), "-", msg)
-        self.clear()
+        if self.__messages == []:
+            eprint("No warnings")
+        else:
+            eprint("Warnings :")
+            for (time, msg, _) in self.__messages:
+                eprintin(1, time.strftime("%Y-%m-%d_%H:%M:%S"), "-", msg)
+            self.clear()

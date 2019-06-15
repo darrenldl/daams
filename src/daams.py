@@ -17,6 +17,8 @@ from ecsbx_store import ECSBXStore
 
 from config import Config
 
+from warning_board import WarningBoard
+
 def main():
     parser = argparse.ArgumentParser(prog=sys_info["acronym"])
 
@@ -42,7 +44,9 @@ def main():
 
     cpu_monitor.self_check_hard_fail()
 
-    ecsbx_stores = [ECSBXStore(x) for x in config.ecsbx_stores()]
+    warning_board = WarningBoard()
+
+    ecsbx_stores = [ECSBXStore(x, warning_board) for x in config.ecsbx_stores()]
 
     for ecsbx_store in ecsbx_stores:
         ecsbx_store.self_check_hard_fail()
@@ -57,6 +61,14 @@ def main():
     for ecsbx_store in ecsbx_stores:
         ecsbx_store.check_archives()
         ecsbx_store.repair_archives()
+
+    print("Sleeping")
+    time.sleep(5)
+
+    for ecsbx_store in ecsbx_stores:
+        ecsbx_store.update_status()
+
+    warning_board.display()
 
     # for ecsbx_store in ecsbx_stores:
     #     ecsbx_store.unmount()
