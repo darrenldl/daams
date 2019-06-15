@@ -5,7 +5,7 @@ from disk_controller import DiskController
 
 class ECSBXStore(DiskController):
     def __init__(self, config):
-        super().__init__(config.partition(), config.mount_dir())
+        super().__init__(config.partition(), config.mount_dir(), config.smart_enabled())
         self.name = config.name()
         self.to_be_repaired = []
 

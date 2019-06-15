@@ -44,8 +44,8 @@ def main():
 
     ecsbx_stores = [ECSBXStore(x) for x in config.ecsbx_stores()]
 
-    # for ecsbx_store in ecsbx_stores:
-    #     ecsbx_store.self_check_hard_fail()
+    for ecsbx_store in ecsbx_stores:
+        ecsbx_store.self_check_hard_fail()
 
     if args.check_only:
         print("All initial checks completed")

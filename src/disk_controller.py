@@ -7,10 +7,11 @@ def get_raw_value(line):
     return line.split()[9]
 
 class DiskController:
-    def __init__(self, part, mount_dir):
+    def __init__(self, part, mount_dir, smart_enabled):
         self.part = part
         self.disk = part.rstrip(string.digits)
         self.mount_dir = mount_dir
+        self.smart_enabled = smart_enabled
 
     def get_smartctl_lines(self):
         return subprocess.run(["smartctl", "-a", self.disk], capture_output=True).stdout.splitlines()
@@ -32,21 +33,24 @@ class DiskController:
             return int(get_raw_value(line))
 
     def self_check_hard_fail(self):
-        print("Disk controller self check with hard fail, disk :", self.__disk)
+        print("Disk controller self check with hard fail, disk :", self.disk)
 
-        temp = self.get_temperature()
-        reallocated_sector_count = self.get_reallocated_sector_count()
+        if self.smart_enabled:
+            temp = self.get_temperature()
+            reallocated_sector_count = self.get_reallocated_sector_count()
 
-        if temp == None:
-            printin(1, "Failed to get temperature")
-            shutdown_error()
-        elif reallocated_sector_count == None:
-            printin(1, "Failed to get reallocated sector count")
-            shutdown_error()
+            if temp == None:
+                printin(1, "Failed to get temperature")
+                shutdown_error()
+            elif reallocated_sector_count == None:
+                printin(1, "Failed to get reallocated sector count")
+                shutdown_error()
+            else:
+                printin(1, "Okay")
+                printin(2, "Temperature :", temp)
+                printin(2, "Reallocated sector count :", reallocated_sector_count)
         else:
-            printin(1, "Okay")
-            printin(2, "Temperature :", temp)
-            printin(2, "Reallocated sector count :", reallocated_sector_count)
+            printin(1, "SMART monitoring not enabled, check skipped")
 
     def mount_output_lines(self):
         return subprocess.run(["mount"], capture_output=True).stdout.splitlines()
