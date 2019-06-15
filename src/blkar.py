@@ -25,7 +25,7 @@ def check_for_installation():
 
     return ver_str
 
-class Blkar_checker:
+class Checker:
     def __init__(self, file_path : str):
         self.proc = Popen(["blkar", "check",
                            "--hash",
@@ -37,7 +37,7 @@ class Blkar_checker:
     def close(self):
         return json.loads(self.proc.stdout.read())
 
-class Blkar_repairer:
+class Repairer:
     def __init__(self, file_path : str):
         self.proc = Popen(["blkar", "repair",
                            "--json",
