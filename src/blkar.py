@@ -27,7 +27,15 @@ def check_for_installation():
 
 def check_file(path):
     completed = subprocess.run(["blkar", "check",
-                                "--hash",
+                                "--json",
+                                path],
+                               capture_output=True)
+
+    return json.loads(completed.stdout)
+
+def check_file_hash_only(path):
+    completed = subprocess.run(["blkar", "check",
+                                "--hash-only",
                                 "--json",
                                 path],
                                capture_output=True)
