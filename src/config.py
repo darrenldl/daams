@@ -45,7 +45,7 @@ def check_ecsbx_stores(config):
                 if not isinstance(store, dict):
                     raise Exception("ECSBX store specification should be key value pairs")
 
-                unrecognised_key = check_keys(store, ["name", "partition", "mount_dir"])
+                unrecognised_key = check_keys(store, ["name", "partition", "mount_dir", "smart_enabled"])
                 if unrecognised_key != None:
                     printin(2, "Unrecognised key", '"' + unrecognised_key + '"')
                     shutdown_error()
@@ -53,6 +53,7 @@ def check_ecsbx_stores(config):
                 name = store["name"]
                 partition = store["partition"]
                 mount_dir = store["mount_dir"]
+                smart_enabled = store["smart_enabled"]
 
                 names.append(name)
                 partitions.append(partition)
@@ -71,6 +72,9 @@ def check_ecsbx_stores(config):
                     pass
                 else:
                     raise Exception(mount_dir + " does not exist")
+
+                if not isinstance(smart_enabled, bool):
+                    raise Exception("smart_enabled should be a boolean")
 
             duplicate_names = misc_utils.collect_duplicates(names)
             if duplicate_names != []:
@@ -150,6 +154,7 @@ def check_disk_health(config):
                 raise Exception("shutdown_temperature should be an integer")
             if shutdown_temperature < 0:
                 raise Exception("shutdown_temperature should be greater than or equal to 0")
+
             printin(2, "Okay")
         else:
             printin(2, "Section not specified")
@@ -192,11 +197,12 @@ def check_config(config):
         shutdown_error()
 
 class ECSBXStoreConfig:
-    def __init__(self, name, partition, mount_dir):
+    def __init__(self, name, partition, mount_dir, smart_enabled):
         self.__name = name
         self.__partition = partition
         self.__mount_dir = mount_dir
         self.__active = True
+        self.__smart_enabled = smart_enabled
 
     def name(self):
         return self.__name
@@ -206,6 +212,9 @@ class ECSBXStoreConfig:
 
     def mount_dir(self):
         return self.__mount_dir
+
+    def smart_enabled(self):
+        return self.__smart_enabled
 
     def mark_inactive(self):
         self.__active = False
@@ -255,7 +264,8 @@ class Config:
                 if "ecsbx_stores" in config:
                     self.__ecsbx_stores = map(lambda d: ECSBXStoreConfig(name=d["name"],
                                                                          partition=d["partition"],
-                                                                         mount_dir=d["mount_dir"]),
+                                                                         mount_dir=d["mount_dir"],
+                                                                         smart_enabled=d["smart_enabled"]),
                                               config["ecsbx_stores"])
 
                 if "cpu_health" in config:
