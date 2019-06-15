@@ -38,7 +38,7 @@ def update_ecsbx_store_status(s, ecsbx_stores):
         ecsbx_store.update_status()
 
 def display_warnings(s, warning_board):
-    s.enter(10, 1, display_warnings, argument=(s, warning_board))
+    s.enter(60, 1, display_warnings, argument=(s, warning_board))
 
     warning_board.display()
 
@@ -91,7 +91,10 @@ def main():
                    ecsbx_stores,
                    warning_board)
 
-    scheduler.run()
+    try:
+        scheduler.run()
+    except KeyboardInterrupt:
+        shutdown_normal()
 
     # for ecsbx_store in ecsbx_stores:
     #     ecsbx_store.unmount()
