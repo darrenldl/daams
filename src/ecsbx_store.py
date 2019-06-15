@@ -35,7 +35,6 @@ class ECSBXStore(DiskController):
                     failed_block_count = res["stats"]["numberOfBlocksFailedCheck"]
                     if failed_block_count > 0:
                         printin(2, failed_block_count, "blocks failed check")
-                        full_failed.append(full_path)
                         repair=True
 
                     if failed_block_count == 0:
@@ -65,6 +64,10 @@ class ECSBXStore(DiskController):
         self.to_be_repaired = full_failed.copy()
 
     def repair(self):
-        for f in self.to_be_repaired:
-            res = blkar.repair_file(f)
-            print(res)
+        print("ECBSX store repair intitiated, store : " + self.name)
+        if self.to_be_repaired == []:
+            printin(1, "No files to be repaired")
+        else:
+            for f in self.to_be_repaired:
+                printin(1, "Repairing " + f)
+                res = blkar.repair_file(f)
