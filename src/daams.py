@@ -24,25 +24,26 @@ def init_tasks(ecsbx_stores):
     for ecsbx_store in ecsbx_stores:
         ecsbx_store.mount()
 
+def check_and_repair_archives(s, ecsbx_stores):
+    s.enter(30 * 60, 1, check_and_repair_archives, argument=(s, ecsbx_stores))
+
     for ecsbx_store in ecsbx_stores:
         ecsbx_store.check_archives()
         ecsbx_store.repair_archives()
 
-    for ecsbx_store in ecsbx_stores:
-        ecsbx_store.update_status()
-
 def update_ecsbx_store_status(s, ecsbx_stores):
-    s.enter(600, 1, update_ecsbx_store_status, s, ecsbx_stores)
+    s.enter(10 * 60, 1, update_ecsbx_store_status, argument=(s, ecsbx_stores))
 
     for ecsbx_store in ecsbx_stores:
         ecsbx_store.update_status()
 
 def display_warnings(s, warning_board):
-    s.enter(60, 1, update_ecsbx_store_status, s, warning_board)
+    s.enter(10, 1, display_warnings, argument=(s, warning_board))
 
     warning_board.display()
 
 def schedule_tasks(s, ecsbx_stores, warning_board):
+    check_and_repair_archives(s, ecsbx_stores)
     update_ecsbx_store_status(s, ecsbx_stores)
     display_warnings(s, warning_board)
 
@@ -89,6 +90,8 @@ def main():
     schedule_tasks(scheduler,
                    ecsbx_stores,
                    warning_board)
+
+    scheduler.run()
 
     # for ecsbx_store in ecsbx_stores:
     #     ecsbx_store.unmount()
