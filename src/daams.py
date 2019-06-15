@@ -7,6 +7,7 @@ import random
 import string
 import sys
 import time
+import sched
 
 import blkar
 import system_diagnostics
@@ -18,6 +19,32 @@ from ecsbx_store import ECSBXStore
 from config import Config
 
 from warning_board import WarningBoard
+
+def init_tasks(ecsbx_stores):
+    for ecsbx_store in ecsbx_stores:
+        ecsbx_store.mount()
+
+    for ecsbx_store in ecsbx_stores:
+        ecsbx_store.check_archives()
+        ecsbx_store.repair_archives()
+
+    for ecsbx_store in ecsbx_stores:
+        ecsbx_store.update_status()
+
+def update_ecsbx_store_status(s, ecsbx_stores):
+    s.enter(600, 1, update_ecsbx_store_status, s, ecsbx_stores)
+
+    for ecsbx_store in ecsbx_stores:
+        ecsbx_store.update_status()
+
+def display_warnings(s, warning_board):
+    s.enter(60, 1, update_ecsbx_store_status, s, warning_board)
+
+    warning_board.display()
+
+def schedule_tasks(s, ecsbx_stores, warning_board):
+    update_ecsbx_store_status(s, ecsbx_stores)
+    display_warnings(s, warning_board)
 
 def main():
     parser = argparse.ArgumentParser(prog=sys_info["acronym"])
@@ -55,20 +82,13 @@ def main():
         print("All initial checks completed")
         shutdown_normal()
 
-    for ecsbx_store in ecsbx_stores:
-        ecsbx_store.mount()
+    scheduler = sched.scheduler(time.time, time.sleep)
 
-    for ecsbx_store in ecsbx_stores:
-        ecsbx_store.check_archives()
-        ecsbx_store.repair_archives()
+    init_tasks(ecsbx_stores)
 
-    print("Sleeping")
-    time.sleep(5)
-
-    for ecsbx_store in ecsbx_stores:
-        ecsbx_store.update_status()
-
-    warning_board.display()
+    schedule_tasks(scheduler,
+                   ecsbx_stores,
+                   warning_board)
 
     # for ecsbx_store in ecsbx_stores:
     #     ecsbx_store.unmount()
