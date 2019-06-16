@@ -101,6 +101,7 @@ def main():
 
         scheduler.run()
     except KeyboardInterrupt:
+        print()
         shutdown_normal()
     except OSShutdownRequest:
         for ecsbx_store in ecsbx_stores:
