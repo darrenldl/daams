@@ -19,7 +19,7 @@ class ECSBXStore(DiskController):
         if not self.active:
             return None
 
-        print_w_time("ECBSX store archive checking intitiated, store : " + self.name)
+        print_w_time("ECBSX store archive checking intitiated, store :", self.name)
         partial = []
         full_okay = []
         full_failed = []
@@ -77,7 +77,7 @@ class ECSBXStore(DiskController):
         if not self.active:
             return
 
-        print_w_time("ECBSX store archive repair intitiated, store : " + self.name)
+        print_w_time("ECBSX store archive repair intitiated, store :", self.name)
         if self.to_be_repaired == []:
             printin(1, "No archives to be repaired")
         else:
@@ -88,7 +88,7 @@ class ECSBXStore(DiskController):
             self.to_be_repaired = []
 
     def health_check(self):
-        print_w_time("ECSBX store status update, store : " + self.name)
+        print_w_time("ECSBX store status update, store :", self.name)
         printin(1, "Checking if mount point is still accessible")
         if not self.check_if_accessible():
             printin(2, "Not accessible, marking as inactive")

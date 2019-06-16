@@ -91,7 +91,7 @@ class DiskController:
             return False
 
     def health_check(self):
-        print_w_time("Disk health check")
+        print_w_time("Disk health check, disk :", self.disk)
         if self.smart_enabled:
             temp = self.get_temperature()
             printin(1, "Temperature :", temp)
