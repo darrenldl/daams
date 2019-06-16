@@ -8,7 +8,7 @@ def gen_padding(indent):
 
 def print_w_time(*args, **kwargs):
     time = datetime.now()
-    print("{:<60} {}".format("".join(args), "[" + time.strftime("%Y-%m-%d_%H:%M:%S")+ "]"), **kwargs)
+    print("{:<60} {}".format("".join(args), "[" + time.strftime("%Y-%m-%d %H:%M:%S")+ "]"), **kwargs)
     # print("[" + time.strftime("%Y-%m-%d_%H:%M:%S")+ "]", 2 * " ", *args, **kwargs)
 
 def printin(indent, *args, **kwargs):

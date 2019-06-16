@@ -37,12 +37,18 @@ def update_ecsbx_store_status(s, ecsbx_stores):
     for ecsbx_store in ecsbx_stores:
         ecsbx_store.update_status()
 
+def check_cpu_health(s, cpu_monitor):
+    s.enter(30, 1, check_cpu_health, argument=(s, cpu_monitor))
+
+    cpu_monitor.check()
+
 def display_warnings(s, warning_board):
     s.enter(60, 1, display_warnings, argument=(s, warning_board))
 
     warning_board.display()
 
-def schedule_tasks(s, ecsbx_stores, warning_board):
+def schedule_tasks(s, cpu_monitor, ecsbx_stores, warning_board):
+    check_cpu_health(s, cpu_monitor)
     check_and_repair_archives(s, ecsbx_stores)
     update_ecsbx_store_status(s, ecsbx_stores)
     display_warnings(s, warning_board)
@@ -68,11 +74,11 @@ def main():
 
     config.load_file(args.config)
 
-    cpu_monitor = CPUMonitor()
+    warning_board = WarningBoard()
+
+    cpu_monitor = CPUMonitor(config.cpu_health(), warning_board)
 
     cpu_monitor.self_check_hard_fail()
-
-    warning_board = WarningBoard()
 
     ecsbx_stores = [ECSBXStore(x, warning_board) for x in config.ecsbx_stores()]
 
@@ -88,6 +94,7 @@ def main():
     init_tasks(ecsbx_stores)
 
     schedule_tasks(scheduler,
+                   cpu_monitor,
                    ecsbx_stores,
                    warning_board)
 

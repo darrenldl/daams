@@ -3,6 +3,10 @@ import blkar
 import platform
 import os
 import shutil
+import subprocess
+
+class ShutdownRequest(Exception):
+    pass
 
 sys_info = {
     "daams_version" : "0.1.0",
@@ -47,3 +51,7 @@ def shutdown_error():
 def shutdown_normal():
     print_w_time("Shutting down", sys_info["acronym"])
     exit(0)
+
+def shutdown_os():
+    print_w_time("Shutting down OS")
+    subprocess.run(["shutdown", "-h", "now"])

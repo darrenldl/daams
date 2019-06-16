@@ -2,7 +2,6 @@ import shutil
 import re
 from packaging import version
 import subprocess
-from subprocess import Popen, PIPE
 import json
 
 blkar_config = {
