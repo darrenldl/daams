@@ -13,9 +13,9 @@ class WarningBoard:
 
     def display(self):
         if self.__messages == []:
-            eprint("No warnings")
+            print("No warnings")
         else:
-            eprint("Warnings :")
+            print("Warnings :")
             for (time, msg, _) in self.__messages:
-                eprintin(1, time.strftime("%Y-%m-%d_%H:%M:%S"), "-", msg)
+                printin(1, time.strftime("%Y-%m-%d_%H:%M:%S"), "-", msg)
             self.clear()

@@ -1,9 +1,14 @@
 import sys
+from datetime import datetime
 
 indent_size = 4
 
 def gen_padding(indent):
     return indent * indent_size * " "
+
+def print_w_time(*args, **kwargs):
+    time = datetime.now()
+    print("[" + time.strftime("%Y-%m-%d_%H:%M:%S")+ "]", *args, **kwargs)
 
 def printin(indent, *args, **kwargs):
     print((indent * indent_size - 1) * " ", *args, **kwargs)

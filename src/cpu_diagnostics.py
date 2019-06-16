@@ -1,6 +1,6 @@
 import subprocess
 from system_diagnostics import shutdown_error
-from print_utils import printin
+from print_utils import print_w_time, printin
 
 class CPUMonitor:
     def get_temperature(self):

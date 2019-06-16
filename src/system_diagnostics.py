@@ -1,4 +1,4 @@
-from print_utils import printin
+from print_utils import print_w_time, printin
 import blkar
 import platform
 import os
@@ -14,14 +14,14 @@ def print_start_up_message():
     print(sys_info["full_name"], "starting")
 
 def check_system_rights():
-    print("Checking system rights")
+    print_w_time("Checking system rights")
     if os.geteuid() != 0:
         printin(1, sys_info["acronym"], "requires root access")
         shutdown_error()
     printin(1, "Okay")
 
 def check_dependencies():
-    print("Checking system dependencies")
+    print_w_time("Checking system dependencies")
     try:
         sys_info["blkar_version"] = blkar.check_for_installation()
         if shutil.which("hddtemp") == None:
@@ -32,7 +32,7 @@ def check_dependencies():
     printin(1, "Okay")
 
 def print_system_info():
-    print("System information")
+    print_w_time("System information")
     printin(1, sys_info["acronym"] + " version : " + sys_info["daams_version"])
     printin(1, "OS name            : " + platform.system())
     printin(1, "OS release         : " + platform.release())
@@ -41,9 +41,9 @@ def print_system_info():
     printin(1, "blkar version      : " + sys_info["blkar_version"])
 
 def shutdown_error():
-    print("Shutting down", sys_info["acronym"])
+    print_w_time("Shutting down", sys_info["acronym"])
     exit(1)
 
 def shutdown_normal():
-    print("Shutting down", sys_info["acronym"])
+    print_w_time("Shutting down", sys_info["acronym"])
     exit(0)
