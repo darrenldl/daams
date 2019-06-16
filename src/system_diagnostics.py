@@ -5,7 +5,7 @@ import os
 import shutil
 import subprocess
 
-class ShutdownRequest(Exception):
+class OSShutdownRequest(Exception):
     pass
 
 sys_info = {

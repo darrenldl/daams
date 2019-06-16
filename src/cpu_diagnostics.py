@@ -1,5 +1,5 @@
 import subprocess
-from system_diagnostics import shutdown_error, ShutdownRequest
+from system_diagnostics import shutdown_error, OSShutdownRequest
 from print_utils import print_w_time, printin
 
 class CPUMonitor:
@@ -33,7 +33,7 @@ class CPUMonitor:
         if temp >= self.__shutdown_temperature:
             printin(2, "CPU temperature has reached shutdown threshold")
             printin(2, "Shutting down OS")
-            raise(ShutdownRequest)
+            raise(OSShutdownRequest)
         elif temp >= self.__warn_temperature:
             printin(2, "CPU temperature has reached warning threshold")
             printin(2, "One-off warning registered")

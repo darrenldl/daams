@@ -11,7 +11,7 @@ import sched
 
 import blkar
 import system_diagnostics
-from system_diagnostics import sys_info, shutdown_normal, shutdown_error, ShutdownRequest
+from system_diagnostics import sys_info, shutdown_normal, shutdown_error, OSShutdownRequest
 from cpu_diagnostics import CPUMonitor
 
 from ecsbx_store import ECSBXStore
@@ -102,7 +102,7 @@ def main():
         scheduler.run()
     except KeyboardInterrupt:
         shutdown_normal()
-    except ShutdownRequest:
+    except OSShutdownRequest:
         for ecsbx_store in ecsbx_stores:
             ecsbx_store.unmount()
         shutdown_error()
