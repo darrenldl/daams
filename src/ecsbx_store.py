@@ -1,6 +1,6 @@
 import os
 import blkar
-from print_utils import printin
+from print_utils import print_w_time, printin
 from disk_controller import DiskController
 
 class ECSBXStore(DiskController):
@@ -15,7 +15,7 @@ class ECSBXStore(DiskController):
         if not self.active:
             return None
 
-        print("ECBSX store archive checking intitiated, store : " + self.name)
+        print_w_time("ECBSX store archive checking intitiated, store : " + self.name)
         partial = []
         full_okay = []
         full_failed = []
@@ -73,7 +73,7 @@ class ECSBXStore(DiskController):
         if not self.active:
             return
 
-        print("ECBSX store archive repair intitiated, store : " + self.name)
+        print_w_time("ECBSX store archive repair intitiated, store : " + self.name)
         if self.to_be_repaired == []:
             printin(1, "No archives to be repaired")
         else:
@@ -84,7 +84,7 @@ class ECSBXStore(DiskController):
             self.to_be_repaired = []
 
     def update_status(self):
-        print("ECSBX store status update")
+        print_w_time("ECSBX store status update")
         printin(1, "Checking if mount point is still accessible")
         if not self.check_if_accessible():
             printin(2, "Not accessible, marking as inactive")

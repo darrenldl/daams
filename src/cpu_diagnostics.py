@@ -12,7 +12,7 @@ class CPUMonitor:
             return None
 
     def self_check_hard_fail(self):
-        print("CPU monitor self check with hard fail")
+        print_w_time("CPU monitor self check with hard fail")
         temp = self.get_temperature()
         if temp == None:
             printin(1, "Failed to get temperature")

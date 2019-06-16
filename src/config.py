@@ -2,7 +2,7 @@ import yaml
 import os
 import stat
 
-from print_utils import printin, indent_str
+from print_utils import print_w_time, printin, indent_str
 
 from system_diagnostics import shutdown_error
 
@@ -182,7 +182,7 @@ def check_delay_before_sched_sec(config):
         shutdown_error()
 
 def check_config(config):
-    print("Checking configuration file")
+    print_w_time("Checking configuration file")
     try:
         check_root_keys(config)
         check_ecsbx_stores(config)
@@ -253,7 +253,7 @@ class Config:
         self.__delay_before_sched_sec = None
 
     def load_file(self, file_path):
-        print("Loading configuration file")
+        print_w_time("Loading configuration file")
         try:
             with open(file_path) as f:
                 config = yaml.safe_load(f.read())

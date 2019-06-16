@@ -1,6 +1,6 @@
 import string
 import subprocess
-from print_utils import printin
+from print_utils import print_w_time, printin
 from system_diagnostics import shutdown_error
 from pathlib import Path
 import os
@@ -35,7 +35,7 @@ class DiskController:
             return int(get_raw_value(line))
 
     def self_check_hard_fail(self):
-        print("Disk controller self check with hard fail, disk :", self.disk)
+        print_w_time("Disk controller self check with hard fail, disk :", self.disk)
 
         if self.smart_enabled:
             temp = self.get_temperature()
@@ -58,7 +58,7 @@ class DiskController:
         return subprocess.run(["mount"], capture_output=True).stdout.splitlines()
 
     def mount(self):
-        print("Mounting partition", self.part, "to", self.mount_dir)
+        print_w_time("Mounting partition", self.part, "to", self.mount_dir)
         lines = [x for x in self.mount_output_lines() if self.part in str(x)]
         if lines == []:
             completed = subprocess.run(["mount", self.part, self.mount_dir], capture_output=True)
@@ -70,7 +70,7 @@ class DiskController:
             printin(1, "Skipped, disk already mounted")
 
     def unmount(self):
-        print("Unmounting directory", self.mount_dir)
+        print_w_time("Unmounting directory", self.mount_dir)
         lines = [x for x in self.mount_output_lines() if self.part in str(x)]
         if lines == []:
             printin(1, "Skipped, disk is not mounted")

@@ -1,5 +1,5 @@
 from datetime import datetime
-from print_utils import eprint, eprintin
+from print_utils import print_w_time, printin
 
 class WarningBoard:
     def __init__(self):
@@ -13,9 +13,9 @@ class WarningBoard:
 
     def display(self):
         if self.__messages == []:
-            print("No warnings")
+            print_w_time("No warnings")
         else:
-            print("Warnings :")
+            print_w_time("Warnings :")
             for (time, msg, _) in self.__messages:
                 printin(1, time.strftime("%Y-%m-%d_%H:%M:%S"), "-", msg)
             self.clear()
