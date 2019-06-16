@@ -17,5 +17,5 @@ class WarningBoard:
         else:
             print_w_time("Warnings :")
             for (time, msg, _) in self.__messages:
-                printin(1, time.strftime("%Y-%m-%d_%H:%M:%S"), "-", msg)
+                printin(1, time.strftime("%Y-%m-%d %H:%M:%S"), "-", msg)
             self.clear()
