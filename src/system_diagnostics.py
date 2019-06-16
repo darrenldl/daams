@@ -15,7 +15,7 @@ sys_info = {
 }
 
 def print_start_up_message():
-    print(sys_info["full_name"], "starting")
+    print_w_time(sys_info["full_name"], "starting")
 
 def check_system_rights():
     print_w_time("Checking system rights")

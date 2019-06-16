@@ -14,6 +14,8 @@ import system_diagnostics
 from system_diagnostics import sys_info, shutdown_normal, shutdown_error, OSShutdownRequest
 from cpu_diagnostics import CPUMonitor
 
+from print_utils import print_w_time
+
 from ecsbx_store import ECSBXStore
 
 from config import Config
@@ -32,7 +34,7 @@ def check_and_repair_archives(s, ecsbx_stores):
         ecsbx_store.repair_archives()
 
 def check_ecsbx_stores_health(s, ecsbx_stores):
-    s.enter(10 * 60, 1, check_ecsbx_stores_health, argument=(s, ecsbx_stores))
+    s.enter(60, 1, check_ecsbx_stores_health, argument=(s, ecsbx_stores))
 
     for ecsbx_store in ecsbx_stores:
         ecsbx_store.health_check()
@@ -89,11 +91,18 @@ def main():
         print("All initial checks completed")
         shutdown_normal()
 
-    scheduler = sched.scheduler(time.time, time.sleep)
-
-    init_tasks(ecsbx_stores)
-
     try:
+        delay_before_sched_sec = config.delay_before_sched_sec()
+        print_w_time("Waiting for", str(delay_before_sched_sec), "seconds before scheduling tasks")
+
+        time.sleep(delay_before_sched_sec)
+
+        print_w_time("Scheduling tasks")
+
+        scheduler = sched.scheduler(time.time, time.sleep)
+
+        init_tasks(ecsbx_stores)
+
         schedule_tasks(scheduler,
                        cpu_monitor,
                        ecsbx_stores,
@@ -102,14 +111,13 @@ def main():
         scheduler.run()
     except KeyboardInterrupt:
         print()
+        for ecsbx_store in ecsbx_stores:
+            ecsbx_store.unmount()
         shutdown_normal()
     except OSShutdownRequest:
         for ecsbx_store in ecsbx_stores:
             ecsbx_store.unmount()
         shutdown_error()
-
-    # for ecsbx_store in ecsbx_stores:
-    #     ecsbx_store.unmount()
 
 if __name__ == "__main__":
     main()
