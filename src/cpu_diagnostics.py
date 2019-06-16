@@ -26,7 +26,7 @@ class CPUMonitor:
             printin(1, "Okay")
             printin(2, "Temperature :", temp)
 
-    def check(self):
+    def health_check(self):
         print_w_time("CPU health check")
         temp = self.get_temperature()
         printin(1, "Temperature :", temp)

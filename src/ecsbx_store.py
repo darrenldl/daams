@@ -4,8 +4,12 @@ from print_utils import print_w_time, printin
 from disk_controller import DiskController
 
 class ECSBXStore(DiskController):
-    def __init__(self, config, warning_board):
-        super().__init__(config.partition(), config.mount_dir(), config.smart_enabled())
+    def __init__(self, config, disk_health_config, warning_board):
+        super().__init__(config.partition(),
+                         config.mount_dir(),
+                         config.smart_enabled(),
+                         disk_health_config.warn_temperature(),
+                         disk_health_config.shutdown_temperature())
         self.name = config.name()
         self.warning_board = warning_board
         self.to_be_repaired = []
@@ -83,11 +87,13 @@ class ECSBXStore(DiskController):
                 print(res)
             self.to_be_repaired = []
 
-    def update_status(self):
-        print_w_time("ECSBX store status update")
+    def health_check(self):
+        print_w_time("ECSBX store status update, store : " + self.name)
         printin(1, "Checking if mount point is still accessible")
         if not self.check_if_accessible():
             printin(2, "Not accessible, marking as inactive")
             self.warning_board.push("ECSBX store " + self.name + " is no longer active")
             printin(2, "Persistant warning registered")
             self.unmount()
+        printin(1, "Checking disk health")
+        super().health_check()

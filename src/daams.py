@@ -31,16 +31,16 @@ def check_and_repair_archives(s, ecsbx_stores):
         ecsbx_store.check_archives()
         ecsbx_store.repair_archives()
 
-def update_ecsbx_store_status(s, ecsbx_stores):
-    s.enter(10 * 60, 1, update_ecsbx_store_status, argument=(s, ecsbx_stores))
+def check_ecsbx_stores_health(s, ecsbx_stores):
+    s.enter(10 * 60, 1, check_ecsbx_stores_health, argument=(s, ecsbx_stores))
 
     for ecsbx_store in ecsbx_stores:
-        ecsbx_store.update_status()
+        ecsbx_store.health_check()
 
 def check_cpu_health(s, cpu_monitor):
     s.enter(30, 1, check_cpu_health, argument=(s, cpu_monitor))
 
-    cpu_monitor.check()
+    cpu_monitor.health_check()
 
 def display_warnings(s, warning_board):
     s.enter(60, 1, display_warnings, argument=(s, warning_board))
@@ -49,8 +49,8 @@ def display_warnings(s, warning_board):
 
 def schedule_tasks(s, cpu_monitor, ecsbx_stores, warning_board):
     check_cpu_health(s, cpu_monitor)
+    check_ecsbx_stores_health(s, ecsbx_stores)
     check_and_repair_archives(s, ecsbx_stores)
-    update_ecsbx_store_status(s, ecsbx_stores)
     display_warnings(s, warning_board)
 
 def main():
@@ -80,7 +80,7 @@ def main():
 
     cpu_monitor.self_check_hard_fail()
 
-    ecsbx_stores = [ECSBXStore(x, warning_board) for x in config.ecsbx_stores()]
+    ecsbx_stores = [ECSBXStore(x, config.disk_health(), warning_board) for x in config.ecsbx_stores()]
 
     for ecsbx_store in ecsbx_stores:
         ecsbx_store.self_check_hard_fail()

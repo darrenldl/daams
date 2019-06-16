@@ -9,11 +9,13 @@ def get_raw_value(line):
     return line.split()[9]
 
 class DiskController:
-    def __init__(self, part, mount_dir, smart_enabled):
+    def __init__(self, part, mount_dir, smart_enabled, warn_temperature, shutdown_temperature):
         self.part = part
         self.disk = part.rstrip(string.digits)
         self.mount_dir = mount_dir
         self.smart_enabled = smart_enabled
+        self.warn_temperature = warn_temperature
+        self.shutdown_temperature = shutdown_temperature
 
     def get_smartctl_lines(self):
         return subprocess.run(["smartctl", "-a", self.disk], capture_output=True).stdout.splitlines()
@@ -87,3 +89,19 @@ class DiskController:
             return True
         except Exception:
             return False
+
+    def health_check(self):
+        print_w_time("Disk health check")
+        if self.smart_enabled:
+            temp = self.get_temperature()
+            printin(1, "Temperature :", temp)
+            if temp >= self.shutdown_temperature:
+                printin(2, "Disk temperature has reached shutdown threshold")
+                printin(2, "Shutting down OS")
+                raise(OSShutdownRequest)
+            elif temp >= self.warn_temperature:
+                printin(2, "Disk temperature has reached warning threshold")
+                printin(2, "One-off warning registered")
+                self.__warning_board.push("Disk temperature at " + str(temp) + ", please check for ventilation status", persist=False)
+        else:
+            printin(1, "SMART monitoring not enabled, check skipped")
