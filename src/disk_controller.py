@@ -69,7 +69,7 @@ class DiskController:
             else:
                 printin(1, "Failed to mount")
         else:
-            printin(1, "Skipped, disk already mounted")
+            printin(1, "Skipped, partition already mounted")
 
     def unmount(self):
         print_w_time("Unmounting directory", self.mount_dir)
