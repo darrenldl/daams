@@ -37,4 +37,4 @@ class CPUMonitor:
         elif temp >= self.__warn_temperature:
             printin(2, "CPU temperature has reached warning threshold")
             printin(2, "One-off warning registered")
-            self.__warning_board.push("CPU temperature at " + str(temp) + ", please check for ventilation status")
+            self.__warning_board.push("CPU temperature at " + str(temp) + ", please check for ventilation status", persist=False)
